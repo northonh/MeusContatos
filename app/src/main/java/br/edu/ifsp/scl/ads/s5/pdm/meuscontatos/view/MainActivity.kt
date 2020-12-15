@@ -14,6 +14,7 @@ import br.edu.ifsp.scl.ads.s5.pdm.meuscontatos.controller.ContatoController
 import br.edu.ifsp.scl.ads.s5.pdm.meuscontatos.databinding.ActivityMainBinding
 import br.edu.ifsp.scl.ads.s5.pdm.meuscontatos.model.Contato
 import br.edu.ifsp.scl.ads.s5.pdm.meuscontatos.view.MainActivity.Extras.EXTRA_CONTATO
+import br.edu.ifsp.scl.ads.s5.pdm.meuscontatos.view.MainActivity.Extras.VISUALIZAR_CONTATO_ACTION
 
 class MainActivity : AppCompatActivity(), OnContatoClickListener {
     // Data source do Adapter
@@ -28,8 +29,10 @@ class MainActivity : AppCompatActivity(), OnContatoClickListener {
 
     // Constantes para a ContatoActivity
     private val NOVO_CONTATO_REQUEST_CODE = 0
+    private val EDITAR_CONTATO_REQUEST_CODE = 1
     object Extras {
         val EXTRA_CONTATO = "EXTRA_CONTATO"
+        val VISUALIZAR_CONTATO_ACTION = "VISUALIZAR_CONTATO_ACTION"
     }
 
     // Controller
@@ -62,7 +65,13 @@ class MainActivity : AppCompatActivity(), OnContatoClickListener {
     override fun onContatoClick(position: Int) {
         // Recuperando o contato clicado
         val contato: Contato = contatosList[position]
-        Toast.makeText(this, contato.nome, Toast.LENGTH_SHORT).show()
+
+        // Visualizando contato
+        val visualizarContatoIntent = Intent(this, ContatoActivity::class.java)
+        visualizarContatoIntent.putExtra(EXTRA_CONTATO, contato)
+        visualizarContatoIntent.action = VISUALIZAR_CONTATO_ACTION
+
+        startActivity(visualizarContatoIntent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -90,6 +99,39 @@ class MainActivity : AppCompatActivity(), OnContatoClickListener {
                 contatosList.add(novoContato)
                 contatosAdapter.notifyDataSetChanged()
             }
+        }
+        else {
+            if (requestCode == EDITAR_CONTATO_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+                val contatoEditado: Contato? = data.getParcelableExtra<Contato>(EXTRA_CONTATO)
+                if (contatoEditado != null) {
+                    // Atualizando no banco
+                    contatoController.atualizaContato(contatoEditado)
+
+                    val posicao = contatosList.indexOfFirst { it.nome.equals(contatoEditado.nome) }
+                    contatosList[posicao] = contatoEditado
+                    contatosAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+    }
+
+    override fun onEditarMenuItemClick(position: Int) {
+        val contatoSelecionado: Contato = contatosList[position]
+
+        val editarContatoIntent = Intent(this, ContatoActivity::class.java)
+        editarContatoIntent.putExtra(EXTRA_CONTATO, contatoSelecionado)
+        startActivityForResult(editarContatoIntent, EDITAR_CONTATO_REQUEST_CODE)
+    }
+
+    override fun onRemoverMenuItemClick(position: Int) {
+        val contatoExcluido = contatosList[position]
+
+        if (position != -1) {
+            // Removendo do banco
+            contatoController.removeContato(contatoExcluido.nome)
+
+            contatosList.removeAt(position)
+            contatosAdapter.notifyDataSetChanged()
         }
     }
 }

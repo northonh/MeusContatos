@@ -4,4 +4,8 @@ package br.edu.ifsp.scl.ads.s5.pdm.meuscontatos.adapter
 // e usada no Adapter para tratar os eventos de clique
 interface OnContatoClickListener {
     fun onContatoClick(position: Int)
+
+    // Funções adicionadas para ContextMenu
+    fun onEditarMenuItemClick(position: Int)
+    fun onRemoverMenuItemClick(position: Int)
 }
