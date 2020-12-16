@@ -1,9 +1,11 @@
 package br.edu.ifsp.scl.ads.s5.pdm.meuscontatos.view
 
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,7 +51,34 @@ class MainActivity : AppCompatActivity(), OnContatoClickListener {
         contatoController = ContatoController(this)
 
         // Inicializando lista de contatos para o Adapter
-        contatosList = contatoController.buscaContatos()
+        contatosList = mutableListOf()
+        val populaContatosListAt = object: AsyncTask<Void, Void, List<Contato>>() {
+            override fun doInBackground(vararg p0: Void?): List<Contato> {
+                // Thread filha
+                Thread.sleep(5000)
+                return contatoController.buscaContatos()
+            }
+
+            override fun onPreExecute() {
+                super.onPreExecute()
+                // Thread de GUI
+                activityMainBinding.contatosListPb.visibility = View.VISIBLE
+                activityMainBinding.listaContatosRv.visibility = View.GONE
+            }
+
+            override fun onPostExecute(result: List<Contato>?) {
+                super.onPostExecute(result)
+                // Thread de GUI
+                activityMainBinding.contatosListPb.visibility = View.GONE
+                activityMainBinding.listaContatosRv.visibility = View.VISIBLE
+                if (result != null) {
+                    contatosList.clear()
+                    contatosList.addAll(result)
+                    contatosAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+        populaContatosListAt.execute()
 
         // Instanciando o LayoutManager
         contatosLayoutManager = LinearLayoutManager(this)
@@ -96,7 +125,8 @@ class MainActivity : AppCompatActivity(), OnContatoClickListener {
                 // Salvando no banco
                 contatoController.insereContato(novoContato)
 
-                contatosList = contatoController.buscaContatos()
+                //contatosList = contatoController.buscaContatos()
+                contatosList.add(novoContato)
                 contatosAdapter.notifyDataSetChanged()
             }
         }
@@ -107,7 +137,8 @@ class MainActivity : AppCompatActivity(), OnContatoClickListener {
                     // Atualizando no banco
                     contatoController.atualizaContato(contatoEditado)
 
-                    contatosList = contatoController.buscaContatos()
+                    //contatosList = contatoController.buscaContatos()
+                    contatosList[contatosList.indexOfFirst { it.nome.equals(contatoEditado.nome) }] = contatoEditado
                     contatosAdapter.notifyDataSetChanged()
                 }
             }
@@ -129,7 +160,8 @@ class MainActivity : AppCompatActivity(), OnContatoClickListener {
             // Removendo do banco
             contatoController.removeContato(contatoExcluido.nome)
 
-            contatosList = contatoController.buscaContatos()
+            //contatosList = contatoController.buscaContatos()
+            contatosList.removeAt(position)
             contatosAdapter.notifyDataSetChanged()
         }
     }

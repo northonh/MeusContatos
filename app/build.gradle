@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-parcelize'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -32,8 +33,8 @@ android {
         jvmTarget = '1.8'
     }
     // Ativando Binding de Views para o módulo Meus_Contatos.app
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 }
 
@@ -52,4 +53,8 @@ dependencies {
 
     // Gson
     implementation "com.google.code.gson:gson:$gson_version"
+
+    // Bill of Materials - Firebase
+    implementation platform('com.google.firebase:firebase-bom:26.1.1')
+    implementation "com.google.firebase:firebase-database-ktx:19.5.1"
 }

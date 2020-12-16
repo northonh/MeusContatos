@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "378903249474",
+    "firebase_url": "https://meuscontatos-97292-default-rtdb.firebaseio.com",
+    "project_id": "meuscontatos-97292",
+    "storage_bucket": "meuscontatos-97292.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:378903249474:android:583d0392ce84f69eb4e3db",
+        "android_client_info": {
+          "package_name": "br.edu.ifsp.scl.ads.s5.pdm.meuscontatos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "378903249474-7oq2qdvi4hjvasrmepgh8louaqng62q3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0wu1bNm2cd5brMZQEKc9GUOEvpbWStp4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "378903249474-7oq2qdvi4hjvasrmepgh8louaqng62q3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
