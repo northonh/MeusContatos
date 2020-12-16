@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(), OnContatoClickListener {
                 // Salvando no banco
                 contatoController.insereContato(novoContato)
 
-                contatosList.add(novoContato)
+                contatosList = contatoController.buscaContatos()
                 contatosAdapter.notifyDataSetChanged()
             }
         }
@@ -107,8 +107,7 @@ class MainActivity : AppCompatActivity(), OnContatoClickListener {
                     // Atualizando no banco
                     contatoController.atualizaContato(contatoEditado)
 
-                    val posicao = contatosList.indexOfFirst { it.nome.equals(contatoEditado.nome) }
-                    contatosList[posicao] = contatoEditado
+                    contatosList = contatoController.buscaContatos()
                     contatosAdapter.notifyDataSetChanged()
                 }
             }
@@ -130,7 +129,7 @@ class MainActivity : AppCompatActivity(), OnContatoClickListener {
             // Removendo do banco
             contatoController.removeContato(contatoExcluido.nome)
 
-            contatosList.removeAt(position)
+            contatosList = contatoController.buscaContatos()
             contatosAdapter.notifyDataSetChanged()
         }
     }
